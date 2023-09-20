@@ -1,20 +1,18 @@
 const socket = io();
 socket.emit('message', "hola me estoy comunicando desde el mas alla");
 
-socket.on('products', function(products) {
-    // Actualizar la lista de productos en tiempo real
-    let productList = document.getElementById('product-list');
-    productList.innerHTML = '';
+socket.on ('actualizar-mensajes', (mensajes) => {
+    const mensajesDiv = document.getElementById('mensajes');
 
-    products.forEach(function(product) {
-      let listItem = document.createElement('li');
-      listItem.innerHTML = `
-        <h2>${product.title}</h2>
-        <p>${product.description}</p>
-        <p>Precio: $${product.price}</p>
-        <p>Stock: ${product.stock}</p>
-        <img src="${product.thumbnail}" alt="${product.title}">
-      `;
-      productList.appendChild(listItem);
-    });
-  });
+    mensajesDiv.innerHTML = "";
+    if(mensajes && mensajes.length > 0) {
+        mensajes.forEach((mensajeObj) => {
+            const mensaje = mensajeObj.mensaje;
+            const socketId = mensajeObj.socketId;
+            const pElement = document.createElement('p');
+
+            pElement.textContent = `~${socketId}: ${mensaje}`;
+            mensajesDiv.appendChild(pElement);
+        });
+    }
+})

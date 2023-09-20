@@ -9,21 +9,50 @@
 
 <body>
     <h1>Lista de productos</h1>
-    
+
     <ul>
-    {{#each products}}
-    <li>
-      <h2>{{title}}</h2>
-      <p>{{description}}</p>
-      <p>Precio: ${{price}}</p>
-      <p>Stock: {{stock}}</p>
-      <img src="{{thumbnail}}" alt="{{title}}">
-    </li>
-    {{/each}}
-  </ul>
+        {{#each products}}
+        <li>
+            <h2>{{title}}</h2>
+            <p>{{description}}</p>
+            <p>Precio: ${{price}}</p>
+            <p>Stock: {{stock}}</p>
+            <img src="{{thumbnail}}" alt="{{title}}">
+        </li>
+        {{/each}}
+    </ul>
+
+    <div>
+        <input type="text" id="mensajeInput" placeholder="Producto a elegir">
+        <button id="enviarMensaje">
+            Enviar
+        </button>
+        <div id="mensajes">
+            {{#each mensajes}}
+            <p>{{this.mensaje}}</p>
+            {{/each}}
+        </div>
+    </div>
 
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/clase10/src/public/js/home.js"></script>
+<script src="/js/home.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const socket = io();
+        const mensajeInput = document.getElementById('mensajeInput');
+        const enviarMensaje = document.getElementById('enviarMensaje');
+        const mensajesDiv = document.getElementById('mensajes');
+
+        enviarMensaje.addEventListener('click', () => {
+            const texto = mensajeInput.value;
+            if (texto.trim() !== '') {
+                socket.emit('message', texto);
+                mensajeInput.value = '';
+            }
+        });
+    });
+</script>
 
 </html>

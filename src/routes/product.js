@@ -8,7 +8,7 @@ const { io } = require('../app');
 //Agrego productoManager 
 const productManager = new ProductManager('src/products.json');
 
-//carga de producto desde el archivo
+// Carga de productos desde el archivo
 function loadProductsFromFile() {
     if (fs.existsSync('src/products.json')) {
         const data = fs.readFileSync('src/products.json', 'utf8');
@@ -22,13 +22,13 @@ function saveProductsToFile(products) {
 }
 
 //Ruta para la vista de home.handlebars
-productRouter.get('./home', (req, res) => {
+productRouter.get('/home', (req, res) => {
     const products = loadProductsFromFile();
     res.render('home', { products });
 });
 
 //Ruta para la vista de realTimesProduct.handlebars
-productRouter.get('./realTimesProducts', (req, res) => {
+productRouter.get('/realTimesProducts', (req, res) => {
     const products = loadProductsFromFile();
     res.render('realTimesProducts', { products });
 });
