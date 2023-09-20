@@ -1,3 +1,10 @@
+const express = require('express');
+const fs = require('fs');
+const productRouter = express.Router();
+const ProductManager = require('../managers/productManager');
+const exphbs = require('express-handlebars');
+const { io } = require('../app');
+
 //Agrego productoManager 
 const productManager = new ProductManager('src/products.json');
 
@@ -67,14 +74,14 @@ productRouter.post('/', (req, res) => {
             code,
             stock,
             category,
-            status 
+            status
         );
-        // Verificar si newProduct es undefined y devolver un 400 si lo es.
-        if (!newProduct) {
-            return res.status(400).json({ error: 'Error al crear el producto' });
+        // Verificar si la operación fue exitosa y devolver un 200 o 400 en consecuencia.
+        if (newProduct) {
+            res.status(200).json({ message: 'Producto creado con éxito' });
+        } else {
+            res.status(400).json({ error: 'Error al crear el producto' });
         }
-
-        res.status(201).json({ message: 'Producto creado con éxito' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el producto' });
     }
@@ -113,3 +120,5 @@ productRouter.delete('/:id', (req, res) => {
         res.status(500).json({ error: 'Error al eliminar el producto' });
     }
 });
+
+module.exports = productRouter;

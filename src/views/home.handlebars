@@ -4,29 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lista de nuestros productos</title>
 </head>
 
 <body>
-    <h1>pruebaaaas</h1>
-    <p>todo listo</p>
+    <h1>Lista de productos</h1>
+    
+    <ul>
+    {{#each products}}
+    <li>
+      <h2>{{title}}</h2>
+      <p>{{description}}</p>
+      <p>Precio: ${{price}}</p>
+      <p>Stock: {{stock}}</p>
+      <img src="{{thumbnail}}" alt="{{title}}">
+    </li>
+    {{/each}}
+  </ul>
+
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script src="../public/js/home.js"></script>
-<script>
-    const socket = io(); // Conéctate al servidor de Socket.IO
-
-    socket.on('connect', () => {
-        console.log('Conectado al servidor el cliente');
-
-        // Envía un mensaje al servidor
-        socket.emit('message', 'Hola, servidor de Socket.IO');
-    });
-
-    // Maneja los mensajes recibidos desde el servidor
-    socket.on('message', data => {
-        console.log('Mensaje del servidor:', data);
-    });
-</script>
+<script src="/clase10/src/public/js/home.js"></script>
 
 </html>
