@@ -3,11 +3,11 @@ import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
 import viewRouter from './routes/view.router.js';
 import { Server } from 'socket.io';
-import ProductManager from './managers/productManager.js';
+//import ProductManager from './managers/productManager.js';
 
 
-const productRouter = require('./routes/product');
-const cartsRouter = require('./routes/carts');
+// const productRouter = require('./routes/product');
+// const cartsRouter = require('./routes/carts');
 
 let products = [];
 
