@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 class ProductManager {
     constructor(path) {
@@ -19,6 +19,7 @@ class ProductManager {
     }
 
     addProduct(title, description, price, thumbnail, code, stock, status, category) {
+        //validaciones
         if (!title || !description || !price || !thumbnail || !code || !stock || !status  || !category) {
             console.log('Todos los campos deben estar definidos.');
             return false;
@@ -86,7 +87,7 @@ class ProductManager {
     }
 }
 
-const productManager = new ProductManager('products.json');
+const productManager = new ProductManager('product.json');
 
 // Agregamos un producto 
 productManager.addProduct('Impresion 3D', 'Consola de 3D', 800, 'imagen1.jpg', 'P1', 5);
@@ -119,4 +120,5 @@ if (productManager.deleteProduct(productId)) {
     console.log('Producto no encontrado para eliminar.');
 }
 
-module.exports = ProductManager;
+
+export default ProductManager;

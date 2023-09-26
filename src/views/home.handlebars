@@ -10,17 +10,7 @@
 <body>
     <h1>Lista de productos</h1>
 
-    <ul>
-        {{#each product}}
-        <li>
-            <h2>{{title}}</h2>
-            <p>{{description}}</p>
-            <p>Precio: ${{price}}</p>
-            <p>Stock: {{stock}}</p>
-            <img src="{{thumbnail}}" alt="{{title}}">
-        </li>
-        {{/each}}
-    </ul>
+
 
     <div>
         <input type="text" id="mensajeInput" placeholder="Producto a elegir">
@@ -52,6 +42,7 @@
                 mensajeInput.value = '';
             }
         });
+       
     });
 </script>
 

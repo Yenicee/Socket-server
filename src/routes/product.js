@@ -1,42 +1,38 @@
-const express = require('express');
-const fs = require('fs');
-const productRouter = express.Router();
-const ProductManager = require('../managers/productManager');
-const exphbs = require('express-handlebars');
-const { io } = require('../app');
+import express from 'express';
+import fs from 'fs';
+import { io } from '../app.js';
+import ProductManager from '../managers/productManager.js';
 
-//Agrego productoManager 
-const productManager = new ProductManager('src/products.json');
+const productRouter = express.Router(); //instancia del enrutador de Express
+
+// Agrega una instancia de ProductManager
+const productManager = new ProductManager('src/product.json');
 
 // Carga de productos desde el archivo
 function loadProductsFromFile() {
-    if (fs.existsSync('src/products.json')) {
-        const data = fs.readFileSync('src/products.json', 'utf8');
-        return JSON.parse(data);
+    if (fs.existsSync('src/product.json')) {
+      const data = fs.readFileSync('src/product.json', 'utf8');
+      return JSON.parse(data);
     }
     return [];
-}
+  }
+  
 
-function saveProductsToFile(products) {
-    fs.writeFileSync('src/products.json', JSON.stringify(products, null, 4));
-}
-
-//Ruta para la vista de home.handlebars
+//Ruta para la vista de home.handlebars y realTimesProducts.handlebars
 productRouter.get('/home', (req, res) => {
-    const products = loadProductsFromFile();
+    const products = productManager.getProducts();
     res.render('home', { products });
 });
 
-//Ruta para la vista de realTimesProduct.handlebars
 productRouter.get('/realTimesProducts', (req, res) => {
-    const products = loadProductsFromFile();
+    const products = productManager.getProducts();
     res.render('realTimesProducts', { products });
 });
 
 // Ruta raíz GET /api/products
 productRouter.get('/', (req, res) => {
     const limit = parseInt(req.query.limit);
-    const products = loadProductsFromFile();
+    const products = productManager.getProducts();
     if (!isNaN(limit) && limit > 0) {
         res.json(products.slice(0, limit));
     } else {
@@ -95,7 +91,8 @@ productRouter.put('/:id', (req, res) => {
         const updatedProduct = productManager.updateProduct(productId, newData);
         if (updatedProduct) {
             // Emitir evento de producto actualizado al websocket
-            io.emit('productUpdated', updatedProduct);
+            const products = loadProductsFromFile(); // Cargar productos actualizados
+            io.emit('productos', products); // Emitir productos actualizados
             res.json({ message: 'Producto actualizado con éxito' });
         } else {
             res.status(404).json({ error: 'Producto no encontrado' });
@@ -111,7 +108,8 @@ productRouter.delete('/:id', (req, res) => {
     try {
         if (productManager.deleteProduct(productId)) {
             // Emitir evento de producto eliminado al websocket
-            io.emit('productDeleted', productId);
+            const products = loadProductsFromFile(); // Cargar productos actualizados
+            io.emit('productos', products); // Emitir productos actualizados
             res.json({ message: 'Producto eliminado con éxito' });
         } else {
             res.status(404).json({ error: 'Producto no encontrado' });
@@ -121,4 +119,4 @@ productRouter.delete('/:id', (req, res) => {
     }
 });
 
-module.exports = productRouter;
+export default productRouter;

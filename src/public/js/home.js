@@ -1,8 +1,9 @@
+import {io} from '../../app.js';
 const socket = io();
 socket.emit('message', "hola me estoy comunicando desde el mas alla");
 
 socket.on ('actualizar-mensajes', (mensajes) => {
-    const mensajesDiv = document.getElementById('mensajes');
+    const mensajesDiv = document.getElementById('mensajes'); //mensajes
 
     mensajesDiv.innerHTML = "";
     if(mensajes && mensajes.length > 0) {
@@ -15,4 +16,5 @@ socket.on ('actualizar-mensajes', (mensajes) => {
             mensajesDiv.appendChild(pElement);
         });
     }
-})
+});
+

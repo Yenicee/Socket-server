@@ -3,13 +3,17 @@ import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
 import viewRouter from './routes/view.router.js';
 import { Server } from 'socket.io';
-//import ProductManager from './managers/productManager.js';
 
 
-// const productRouter = require('./routes/product');
-// const cartsRouter = require('./routes/carts');
-
+//Array de los productos 
 let products = [];
+
+//funcion para agregar el producto
+function addProduct(title, description, price) {
+    const product = { title, description, price };
+    products.push(product);
+    io.emit('productos', products); // Emitir la lista de productos a todos los clientes
+  }
 
 const app = express();
 
@@ -17,17 +21,11 @@ const httpServer = app.listen(8080, () => console.log("escuchando el puerto 8080
 const socketServer = new Server(httpServer);
 
 
-
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
-
-//app.use(express.static(__dirname + '/public'));
 app.use('/', viewRouter);
-
-//rutas y cosas de pruebas
-
 
 //Definir un arreglo para mensajes
 const mensajes = [];
@@ -38,6 +36,14 @@ socketServer.on('connection', socket => {
 
     // Emitir mensajes actuales al nuevo cliente
     socket.emit('actualizar-mensajes', mensajes);
+
+    //Emitir productos al cliente
+    socket.emit('productos', products);
+
+    // Manejar eventos personalizados, como agregar productos
+  socket.on('addProduct', ({ title, description, price }) => {
+    addProduct(title, description, price);
+  });
 
     // Escuchar mensajes enviados por el cliente
     socket.on('message', texto => {
