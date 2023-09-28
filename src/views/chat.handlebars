@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="chat-box">
+  {{#each messages}}
+    <div class="message">
+      <strong>{{this.sender}}:</strong> {{this.text}}
+      <span class="timestamp">{{formatDate this.timestamp}}</span>
+    </div>
+  {{/each}}
+</div>
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/home.js"></script>
+</html>

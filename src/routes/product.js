@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import { io } from '../app.js';
-import ProductManager from '../managers/productManager.js';
+import ProductManager from '../dao/managers/productManager.js';
 
 const productRouter = express.Router(); //instancia del enrutador de Express
 

@@ -3,17 +3,17 @@ import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
 import viewRouter from './routes/view.router.js';
 import { Server } from 'socket.io';
-
+import mongoose from 'mongoose';
 
 //Array de los productos 
 let products = [];
 
 //funcion para agregar el producto
-function addProduct(io,title, description, price) {
-    const product = { title, description, price };
-    products.push(product);
-    io.emit('productos', products); // Emitir la lista de productos a todos los clientes
-  }
+function addProduct(io, title, description, price) {
+  const product = { title, description, price };
+  products.push(product);
+  io.emit('productos', products); // Emitir la lista de productos a todos los clientes
+}
 
 const app = express();
 
@@ -32,29 +32,36 @@ const mensajes = [];
 
 // Server Socket
 socketServer.on('connection', socket => {
-    console.log('Nuevo cliente conectado');
+  console.log('Nuevo cliente conectado');
 
-    // Emitir mensajes actuales al nuevo cliente
-    socket.emit('actualizar-mensajes', mensajes);
+  // Emitir mensajes actuales al nuevo cliente
+  socket.emit('actualizar-mensajes', mensajes);
 
-    //Emitir productos al cliente
-    socket.emit('productos', products);
+  //Emitir productos al cliente
+  socket.emit('productos', products);
 
-    // Manejar eventos personalizados, como agregar productos
+  // Manejar eventos personalizados, como agregar productos
   socket.on('addProduct', ({ title, description, price }) => {
-    addProduct(socketServer,title, description, price);
+    addProduct(socketServer, title, description, price);
   });
 
-    // Escuchar mensajes enviados por el cliente
-    socket.on('message', texto => {
-        const socketId = socket.id;
-        const mensaje = { mensaje: texto, socketId: socketId };
-        
-        // mensaje al arreglo de mensajes
-        mensajes.push(mensaje);
+  // Escuchar mensajes enviados por el cliente
+  socket.on('message', texto => {
+    const socketId = socket.id;
+    const mensaje = { mensaje: texto, socketId: socketId };
 
-        // Emitir el mensaje a todos los clientes conectados
-        socketServer.emit('actualizar-mensajes', mensajes);
-    });
+    // mensaje al arreglo de mensajes
+    mensajes.push(mensaje);
+
+    // Emitir el mensaje a todos los clientes conectados
+    socketServer.emit('actualizar-mensajes', mensajes);
+  });
 });
 
+//conexion a la base de BDD
+try {
+  await mongoose.connect('mongodb+srv://perezyenice:xVrnoKCVRND4yJTu@cluster47300ap.gehcely.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp');
+  console.log('BDD conectado')
+} catch(error) {
+ console.log(error.message);
+}
