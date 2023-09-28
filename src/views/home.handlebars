@@ -10,7 +10,57 @@
 <body>
     <h1>Lista de productos</h1>
 
+     <table>
 
+  <thead>
+
+    <tr>
+
+      <th>ID</th>
+
+      <th>Título</th>
+
+      <th>Descripción</th>
+
+      <th>Código</th>
+
+      <th>Precio</th>
+
+      <th>Stock</th>
+
+      <th>Categoría</th>
+
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    {{#each products}}
+
+      <tr>
+
+        <td>{{this.id}}</td>
+
+        <td>{{this.title}}</td>
+
+        <td>{{this.description}}</td>
+
+        <td>{{this.code}}</td>
+
+        <td>{{this.price}}</td>
+
+        <td>{{this.stock}}</td>
+
+        <td>{{this.category}}</td>
+
+      </tr>
+
+    {{/each}}
+
+  </tbody>
+
+</table>
 
     <div>
         <input type="text" id="mensajeInput" placeholder="Producto a elegir">

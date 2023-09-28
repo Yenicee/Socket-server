@@ -9,13 +9,61 @@
 
 <body>
   <h1>Lista de Productos en Tiempo Real</h1>
-  <p>Mercaderia moderna del 2023</p>
+  <p>Mercadería moderna del 2023</p>
 
-   
+  <!-- mostrar los productos en tiempo real -->
+  <ul id="productList">
+    {{#each products}}
+    <li>
+      <strong>{{this.title}}</strong> - Precio: {{this.price}} - Stock: {{this.stock}}
+    </li>
+    {{/each}}
+  </ul>
 
-
+  <!-- Agrega un formulario para agregar nuevos productos en tiempo real -->
+  <form id="addProductForm">
+    <label for="title">Título:</label>
+    <input type="text" id="title" name="title">
+    <label for="price">Precio:</label>
+    <input type="number" id="price" name="price">
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock" name="stock">
+    <button type="submit">Agregar Producto</button>
+  </form>
 
 </body>
+
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/home.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const socket = io();
+
+    // Escucha eventos del servidor para actualizar la lista de productos en tiempo real
+    socket.on('updateProducts', (updatedProducts) => {
+      // Actualiza la lista de productos en la vista
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
+      updatedProducts.forEach((product) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${product.title}</strong> - Precio: ${product.price} - Stock: ${product.stock}`;
+        productList.appendChild(li);
+      });
+    });
+
+    // Maneja el formulario de agregar productos
+    const addProductForm = document.getElementById('addProductForm');
+    addProductForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value;
+      const price = parseFloat(document.getElementById('price').value);
+      const stock = parseInt(document.getElementById('stock').value);
+
+      // Envía los datos del nuevo producto al servidor
+      socket.emit('addProduct', { title, price, stock });
+    });
+  });
+</script>
+
 </html>
+
+

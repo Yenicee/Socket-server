@@ -9,7 +9,7 @@ import { Server } from 'socket.io';
 let products = [];
 
 //funcion para agregar el producto
-function addProduct(title, description, price) {
+function addProduct(io,title, description, price) {
     const product = { title, description, price };
     products.push(product);
     io.emit('productos', products); // Emitir la lista de productos a todos los clientes
@@ -42,7 +42,7 @@ socketServer.on('connection', socket => {
 
     // Manejar eventos personalizados, como agregar productos
   socket.on('addProduct', ({ title, description, price }) => {
-    addProduct(title, description, price);
+    addProduct(socketServer,title, description, price);
   });
 
     // Escuchar mensajes enviados por el cliente
