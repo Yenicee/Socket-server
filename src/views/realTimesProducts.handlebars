@@ -16,6 +16,7 @@
     {{#each products}}
     <li>
       <strong>{{this.title}}</strong> - Precio: {{this.price}} - Stock: {{this.stock}}
+      <button onclick="eliminarProducto('{{this._id}}')">Eliminar</button>
     </li>
     {{/each}}
   </ul>
@@ -61,9 +62,13 @@
       // Envía los datos del nuevo producto al servidor
       socket.emit('addProduct', { title, price, stock });
     });
+
+    // Función para eliminar un producto
+    function eliminarProducto(productId) {
+      // Envía el ID del producto al servidor para eliminarlo
+      socket.emit('eliminarProducto', productId);
+    }
   });
 </script>
 
 </html>
-
-

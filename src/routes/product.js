@@ -90,16 +90,16 @@ productRouter.put('/:id', (req, res) => {
     try {
         const updatedProduct = productManager.updateProduct(productId, newData);
         if (updatedProduct) {
-            // Emitir evento de producto actualizado al websocket
-            const products = loadProductsFromFile(); // Cargar productos actualizados
-            io.emit('productos', products); // Emitir productos actualizados
-            res.json({ message: 'Producto actualizado con éxito' });
-        } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Error al actualizar el producto' });
-    }
+          // Emitir evento 'updateProducts' al websocket
+          const products = loadProductsFromFile(); // Cargar productos actualizados
+          io.emit('updateProducts', products); // Emitir productos actualizados con el nuevo nombre 'updateProducts'
+          res.json({ message: 'Producto actualizado con éxito' });
+      } else {
+          res.status(404).json({ error: 'Producto no encontrado' });
+      }
+  } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar el producto' });
+  }
 });
 
 // Ruta DELETE /api/products/:id
@@ -107,16 +107,16 @@ productRouter.delete('/:id', (req, res) => {
     const productId = parseInt(req.params.id);
     try {
         if (productManager.deleteProduct(productId)) {
-            // Emitir evento de producto eliminado al websocket
-            const products = loadProductsFromFile(); // Cargar productos actualizados
-            io.emit('productos', products); // Emitir productos actualizados
-            res.json({ message: 'Producto eliminado con éxito' });
-        } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
+                // Emitir evento 'updateProducts' al websocket
+                const products = loadProductsFromFile(); // Cargar productos actualizados
+                io.emit('updateProducts', products); // Emitir productos actualizados con el nuevo nombre 'updateProducts'
+                res.json({ message: 'Producto eliminado con éxito' });
+            } else {
+                res.status(404).json({ error: 'Producto no encontrado' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Error al eliminar el producto' });
         }
-    } catch (error) {
-        res.status(500).json({ error: 'Error al eliminar el producto' });
-    }
 });
 
 export default productRouter;
