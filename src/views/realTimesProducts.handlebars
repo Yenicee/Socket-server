@@ -16,7 +16,6 @@
     {{#each products}}
     <li>
       <strong>{{this.title}}</strong> - Precio: {{this.price}} - Stock: {{this.stock}}
-      <button onclick="eliminarProducto('{{this._id}}')">Eliminar</button>
     </li>
     {{/each}}
   </ul>
@@ -30,6 +29,8 @@
     <label for="stock">Stock:</label>
     <input type="number" id="stock" name="stock">
     <button type="submit">Agregar Producto</button>
+    <button onclick="eliminarProducto('{{this._id}}')">Eliminar</button>
+
   </form>
 
 </body>
@@ -47,6 +48,10 @@
       updatedProducts.forEach((product) => {
         const li = document.createElement('li');
         li.innerHTML = `<strong>${product.title}</strong> - Precio: ${product.price} - Stock: ${product.stock}`;
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.onclick = () => eliminarProducto(product._id); // Llama a la función eliminarProducto con el ID
+        li.appendChild(deleteButton);
         productList.appendChild(li);
       });
     });
@@ -63,12 +68,13 @@
       socket.emit('addProduct', { title, price, stock });
     });
 
-    // Función para eliminar un producto
+    // Definir la función eliminarProducto en el ámbito global
     function eliminarProducto(productId) {
       // Envía el ID del producto al servidor para eliminarlo
       socket.emit('eliminarProducto', productId);
     }
   });
 </script>
+
 
 </html>

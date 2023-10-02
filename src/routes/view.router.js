@@ -1,6 +1,7 @@
 import express from 'express';
 import ProductManager from '../dao/managers/productManager.js';
 import { messagesModel } from '../dao/models/messages.model.js';
+import productRouter from './product.js';
 
 const router = express.Router();
 const productManager = new ProductManager('product.json');
@@ -25,6 +26,7 @@ router.get('/realTimesProducts', (req, res) => {
   }
 });
 
+
 // Ruta para cargar los mensajes y renderizar la vista chat.handlebars
 router.get('/chat', async (req, res) => {
   try {
@@ -36,6 +38,9 @@ router.get('/chat', async (req, res) => {
     console.error('Error al cargar los mensajes', error);
     res.status(500).json({ error: 'Error al cargar los mensajes' });
   }
+
 });
+
+
 
 export default router;

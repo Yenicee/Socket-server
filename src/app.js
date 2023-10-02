@@ -2,6 +2,7 @@ import express from 'express';
 import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
 import viewRouter from './routes/view.router.js';
+import productRouter from './routes/product.js';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 
@@ -26,6 +27,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
 app.use('/', viewRouter);
+//enrutador de productos
+app.use('/api/products', productRouter);
 
 //Definir un arreglo para mensajes
 const mensajes = [];
@@ -45,6 +48,16 @@ socketServer.on('connection', socket => {
     addProduct(socketServer, title, description, price);
   });
 
+  // Manejar eventos personalizados, como eliminar productos
+  socket.on('eliminarProducto', (productId) => {
+    const productIndex = products.findIndex(product => product.id === productId);
+    if (productIndex !== -1) {
+      products.splice(productIndex, 1);
+      // Emitir el evento 'updateProducts' con los productos actualizados
+      socketServer.emit('updateProducts', products);
+    }
+  });
+
   // Escuchar mensajes enviados por el cliente
   socket.on('message', texto => {
     const socketId = socket.id;
@@ -62,7 +75,7 @@ socketServer.on('connection', socket => {
 try {
   await mongoose.connect('mongodb+srv://perezyenice:xVrnoKCVRND4yJTu@cluster47300ap.gehcely.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp');
   console.log('BDD conectado')
-} catch(error) {
- console.log(error.message);
+} catch (error) {
+  console.log(error.message);
 }
 
