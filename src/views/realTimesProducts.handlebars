@@ -22,15 +22,13 @@
 
   <!--formulario para agregar nuevos productos en tiempo real -->
   <form id="addProductForm">
-  <label for="title">Título:</label>
-  <input type="text" id="title" name="title">
-  <label for="price">Precio:</label>
-  <input type="number" id="price" name="price">
-  <label for="stock">Stock:</label>
-  <input type="number" id="stock" name="stock">
-  <button type="submit">Enviar</button>
-    <button onclick="eliminarProducto('{{this.id}}')">Eliminar</button>
-</form>
+    <label for="title">Título:</label>
+    <input type="text" id="title" name="title">
+    <label for="price">Precio:</label>
+    <input type="number" id="price" name="price">
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock" name="stock">
+  </form>
 
 </body>
 
@@ -66,12 +64,6 @@
       // Envía los datos del nuevo producto al servidor
       socket.emit('addProduct', { title, price, stock });
     });
-
-    // Definir la función eliminarProducto en el ámbito global
-    function eliminarProducto(productId) {
-      // Envía el ID del producto al servidor para eliminarlo
-      socket.emit('eliminarProducto', productId);
-    }
   });
 </script>
 

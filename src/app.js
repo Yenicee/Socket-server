@@ -17,6 +17,8 @@ function addProduct(io, title, description, price) {
 }
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 
 const httpServer = app.listen(8080, () => console.log("escuchando el puerto 8080"));
 export const socketServer = new Server(httpServer);
@@ -29,10 +31,6 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', viewRouter);
 //enrutador de productos
 app.use('/api/products', productRouter);
-
-app.use(express.json());
-
-app.use(express.urlencoded({extended:true}));
 
 //Definir un arreglo para mensajes
 const mensajes = [];
