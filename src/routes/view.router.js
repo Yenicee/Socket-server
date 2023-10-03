@@ -1,7 +1,7 @@
 import express from 'express';
 import ProductManager from '../dao/managers/productManager.js';
 import { messagesModel } from '../dao/models/messages.model.js';
-import productRouter from './product.js';
+
 
 const router = express.Router();
 const productManager = new ProductManager('product.json');

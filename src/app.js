@@ -13,13 +13,13 @@ let products = [];
 function addProduct(io, title, description, price) {
   const product = { title, description, price };
   products.push(product);
-  io.emit('productos', products); // Emitir la lista de productos a todos los clientes
+  socketServer.emit('productos', products); // Emitir la lista de productos a todos los clientes
 }
 
 const app = express();
 
 const httpServer = app.listen(8080, () => console.log("escuchando el puerto 8080"));
-const socketServer = new Server(httpServer);
+export const socketServer = new Server(httpServer);
 
 
 app.engine('handlebars', handlebars.engine());
@@ -29,6 +29,10 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', viewRouter);
 //enrutador de productos
 app.use('/api/products', productRouter);
+
+app.use(express.json());
+
+app.use(express.urlencoded({extended:true}));
 
 //Definir un arreglo para mensajes
 const mensajes = [];
@@ -44,12 +48,12 @@ socketServer.on('connection', socket => {
   socket.emit('productos', products);
 
   // Manejar eventos personalizados, como agregar productos
-  socket.on('addProduct', ({ title, description, price }) => {
+  socketServer.on('addProduct', ({ title, description, price }) => {
     addProduct(socketServer, title, description, price);
   });
 
   // Manejar eventos personalizados, como eliminar productos
-  socket.on('eliminarProducto', (productId) => {
+  socketServer.on('eliminarProducto', (productId) => {
     const productIndex = products.findIndex(product => product.id === productId);
     if (productIndex !== -1) {
       products.splice(productIndex, 1);
@@ -78,4 +82,3 @@ try {
 } catch (error) {
   console.log(error.message);
 }
-

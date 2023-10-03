@@ -15,23 +15,22 @@
   <ul id="productList">
     {{#each products}}
     <li>
-      <strong>{{this.title}}</strong> - Precio: {{this.price}} - Stock: {{this.stock}}
+      <strong>{{this.title}}</strong> - Precio: {{this.price}} - Stock: {{this.stock}} -Id: {{this.id}}
     </li>
     {{/each}}
   </ul>
 
   <!--formulario para agregar nuevos productos en tiempo real -->
   <form id="addProductForm">
-    <label for="title">Título:</label>
-    <input type="text" id="title" name="title">
-    <label for="price">Precio:</label>
-    <input type="number" id="price" name="price">
-    <label for="stock">Stock:</label>
-    <input type="number" id="stock" name="stock">
-    <button type="submit">Agregar Producto</button>
-    <button onclick="eliminarProducto('{{this._id}}')">Eliminar</button>
-
-  </form>
+  <label for="title">Título:</label>
+  <input type="text" id="title" name="title">
+  <label for="price">Precio:</label>
+  <input type="number" id="price" name="price">
+  <label for="stock">Stock:</label>
+  <input type="number" id="stock" name="stock">
+  <button type="submit">Enviar</button>
+    <button onclick="eliminarProducto('{{this.id}}')">Eliminar</button>
+</form>
 
 </body>
 
@@ -50,7 +49,7 @@
         li.innerHTML = `<strong>${product.title}</strong> - Precio: ${product.price} - Stock: ${product.stock}`;
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Eliminar';
-        deleteButton.onclick = () => eliminarProducto(product._id); // Llama a la función eliminarProducto con el ID
+        deleteButton.onclick = () => eliminarProducto(product.id); // Llama a la función eliminarProducto con el ID
         li.appendChild(deleteButton);
         productList.appendChild(li);
       });

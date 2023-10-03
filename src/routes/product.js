@@ -1,8 +1,7 @@
 import express from 'express';
 import fs from 'fs';
-import { io } from '../app.js';
 import ProductManager from '../dao/managers/productManager.js';
-
+import { socketServer } from '../app.js';
 
 const productRouter = express.Router(); //instancia del enrutador de Express
 
@@ -12,12 +11,12 @@ const productManager = new ProductManager('src/product.json');
 // Carga de productos desde el archivo
 function loadProductsFromFile() {
     if (fs.existsSync('src/product.json')) {
-      const data = fs.readFileSync('src/product.json', 'utf8');
-      return JSON.parse(data);
+        const data = fs.readFileSync('src/product.json', 'utf8');
+        return JSON.parse(data);
     }
     return [];
-  }
-  
+}
+
 
 //Ruta para la vista de home.handlebars y realTimesProducts.handlebars
 productRouter.get('/home', (req, res) => {
@@ -44,7 +43,7 @@ productRouter.get('/', (req, res) => {
 // Ruta GET /api/products/:id
 productRouter.get('/:id', (req, res) => {
     const productId = parseInt(req.params.id);
-    const products = loadProductsFromFile();
+    const products = productManager.getProducts();
     const product = products.find(product => product.id === productId);
     if (product) {
         res.json(product);
@@ -89,18 +88,19 @@ productRouter.put('/:id', (req, res) => {
     const productId = parseInt(req.params.id);
     const newData = req.body;
     try {
-        const updatedProduct = productManager.updateProduct(productId, newData);
+        const updatedProduct = productManager.updateProduct(parseInt(productId), newData);
+
         if (updatedProduct) {
-          // Emitir evento 'updateProducts' al websocket
-          const products = loadProductsFromFile(); // Cargar productos actualizados
-          io.emit('updateProducts', products); // Emitir productos actualizados con el nuevo nombre 'updateProducts'
-          res.json({ message: 'Producto actualizado con éxito' });
-      } else {
-          res.status(404).json({ error: 'Producto no encontrado' });
-      }
-  } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar el producto' });
-  }
+            // Emitir evento 'updateProducts' al websocket
+            const products = productManager.getProducts(); // Cargar productos actualizados
+            socketServer.emit('updateProducts', products); // Emitir productos actualizados con el nuevo nombre 'updateProducts'
+            res.json({ message: 'Producto actualizado con éxito' });
+        } else {
+            res.status(404).json({ error: 'Producto no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al actualizar el producto' });
+    }
 });
 
 // Ruta DELETE /api/products/:id
@@ -108,16 +108,16 @@ productRouter.delete('/:id', (req, res) => {
     const productId = parseInt(req.params.id);
     try {
         if (productManager.deleteProduct(productId)) {
-                // Emitir evento 'updateProducts' al websocket
-                const products = loadProductsFromFile(); // Cargar productos actualizados
-                io.emit('updateProducts', products); // Emitir productos actualizados con el nuevo nombre 'updateProducts'
-                res.json({ message: 'Producto eliminado con éxito' });
-            } else {
-                res.status(404).json({ error: 'Producto no encontrado' });
-            }
-        } catch (error) {
-            res.status(500).json({ error: 'Error al eliminar el producto' });
+            // Emitir evento 'updateProducts' al websocket
+            const products = productManager.getProducts(); // Cargar productos actualizados
+            socketServer.emit('updateProducts', products); // Emitir productos actualizados con el nuevo nombre 'updateProducts'
+            res.json({ message: 'Producto eliminado con éxito' });
+        } else {
+            res.status(404).json({ error: 'Producto no encontrado' });
         }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar el producto' });
+    }
 });
 
 export default productRouter;
