@@ -30,13 +30,53 @@ productRouter.get('/realTimesProducts', (req, res) => {
 });
 
 // Ruta raíz GET /api/products
-productRouter.get('/', (req, res) => {
-    const limit = parseInt(req.query.limit);
-    const products = productManager.getProducts();
-    if (!isNaN(limit) && limit > 0) {
-        res.json(products.slice(0, limit));
-    } else {
-        res.json(products);
+productRouter.get('/', async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page) || 1;
+        const sort = req.query.sort === 'desc' ? -1 : 1;
+        const query = req.query.query || ''; 
+        const category = req.query.category || ''; 
+        const available = req.query.available || ''; 
+
+        // Filtrar y ordenar los productos según los parámetros recibidos
+        const filter = {};
+        if (query) {
+            filter.nombre = { $regex: query, $options: 'i' }; // Búsqueda por nombre (ignora mayúsculas/minúsculas)
+        }
+        if (category) {
+            filter.categoria = category; // Filtrar por categoría
+        }
+        if (available) {
+            filter.disponibilidad = available; // Filtrar por disponibilidad
+        }
+
+        const options = {
+            limit,
+            page,
+            sort: { precio: 500 }, 
+        };
+
+        const products = await productManager.getProducts(filter, options);
+
+        // Construir la respuesta con el formato requerido
+        const response = {
+            status: 'success',
+            payload: products.docs, // Los documentos de la página actual
+            totalPages: products.totalPages,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            page: products.page,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevLink: products.hasPrevPage ? `/api/products?page=${products.prevPage}&limit=${limit}&sort=${req.query.sort}&query=${query}&category=${category}&available=${available}` : null,
+            nextLink: products.hasNextPage ? `/api/products?page=${products.nextPage}&limit=${limit}&sort=${req.query.sort}&query=${query}&category=${category}&available=${available}` : null,
+        };
+
+        res.json(response);
+    } catch (error) {
+        console.error('Error al obtener los productos', error);
+        res.status(500).json({ error: 'Error al obtener los productos' });
     }
 });
 

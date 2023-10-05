@@ -1,6 +1,5 @@
-import {io} from '../../app.js';
+//import {socketServer} from '../../app.js';
 const socket = io();
-socket.emit('message', "hola me estoy comunicando desde el mas alla");
 
 socket.on ('actualizar-mensajes', (mensajes) => {
     const mensajesDiv = document.getElementById('mensajes'); //mensajes

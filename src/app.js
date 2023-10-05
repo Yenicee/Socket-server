@@ -5,6 +5,7 @@ import viewRouter from './routes/view.router.js';
 import productRouter from './routes/product.js';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
+import productModel from './dao/models/products.model.js';
 
 //Array de los productos 
 let products = [];
@@ -74,9 +75,14 @@ socketServer.on('connection', socket => {
 });
 
 //conexion a la base de BDD
-try {
-  await mongoose.connect('mongodb+srv://perezyenice:xVrnoKCVRND4yJTu@cluster47300ap.gehcely.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp');
-  console.log('BDD conectado')
-} catch (error) {
-  console.log(error.message);
-}
+const environment = async () => {
+  try {
+    await mongoose.connect('mongodb+srv://perezyenice:xVrnoKCVRND4yJTu@cluster47300ap.gehcely.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp');
+    let products = await productModel.paginate({id:1})
+    console.log(products);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+environment();
