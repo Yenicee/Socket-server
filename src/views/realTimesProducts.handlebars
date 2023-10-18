@@ -8,8 +8,9 @@
 </head>
 
 <body>
-  <h1>Lista de Productos en Tiempo Real</h1>
+  <h1>Bienvenido, {{user.username}}!</h1>
   <p>Mercadería moderna del 2023</p>
+    <button type="submit">Cerrar seccion</button>
 
   <!-- mostrar los productos en tiempo real -->
   <ul id="productList">
@@ -32,7 +33,7 @@
 
 </body>
 
-<script src="/socket.io/socket.io.js"></script>
+<script src="/realProducts.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const socket = io();
