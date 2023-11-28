@@ -1,11 +1,6 @@
 import express from 'express';
 import fs from 'fs';
-import CartsManager from '../dao/managers/cartManager';
-import cartsModel from '../dao/models/carts.model';
-
-
-// Ruta del archivo JSON de carritos
-const cartsFilePath = 'src/carts.json';
+import CartsManager from '../dao/managers/cartManager.js';
 
 const cartsRouter = express.Router();
 
@@ -158,7 +153,7 @@ cartsRouter.delete('/:cid', async (req, res) => {
 cartsRouter.get('/:cid', async (req, res) => {
     const cartId = parseInt(req.params.cid);
     try {
-        const cart = await cartsModel.findById(cartId).populate('products'); // 
+        const cart = await cartsModel.findById(cartId).populate('products'); //
 
         if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado' });

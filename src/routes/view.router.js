@@ -1,5 +1,6 @@
 import express from 'express';
 import ProductManager from '../dao/managers/productManager.js';
+import CartsManager from '../dao/managers/cartManager.js';
 import messagesModel from '../dao/models/messages.model.js';
 import { Router } from 'express';
 
@@ -22,8 +23,10 @@ const productManager = new ProductManager('product.json');
 
 router.get('/', (req, res) => {
   try {
-    const products = productManager.getProducts();
+    const products = ProductManager.getProducts();
     res.render('home', { products });
+    const carts = CartsManager.getCarts();
+    res.render('home', {carts});
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Error interno del servidor');
