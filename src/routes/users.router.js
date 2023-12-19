@@ -6,6 +6,7 @@ const router = Router();
 
 //PRIMER SERVICIO PARA REGISTRAR EL USUARIO
 router.post('/register', async (req, res) => {
+    
   try{
    const {first_name, last_name, email, password } = req.body;
    const exists = await userModel.findOne({email});

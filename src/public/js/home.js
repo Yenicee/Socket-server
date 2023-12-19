@@ -17,6 +17,38 @@
 //     }
 // });
 const form = document.getElementById('loginForm');
+const register = document.getElementById('registerForm');
+
+register.addEventListener('submit', async (event) => {
+    event.preventDefault(); 
+    
+    // Aquí puedes realizar cualquier lógica adicional antes de enviar el formulario, si es necesario
+    
+    const formData = new FormData(register); 
+    
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(Object.fromEntries(formData)),
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            alert(result.message);
+          
+        } else {
+            alert(result.message);
+        }
+
+    } catch (error) {
+        console.error('Error al enviar el formulario:', error);
+      
+    }
+});
 
 form.addEventListener('submit', e => {
     e.preventDefault();
